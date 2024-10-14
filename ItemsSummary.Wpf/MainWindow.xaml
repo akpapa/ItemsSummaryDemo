@@ -1,0 +1,117 @@
+﻿<Window x:Class="ItemsSummary.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ItemsSummary.Wpf"
+        xmlns:vm="clr-namespace:ItemsSummary.ViewModel;assembly=ItemsSummary.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="700" Width="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ListView ItemsSource="{Binding PoFileList}" Grid.Column="0" SelectionMode="Multiple">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="IsSelected" Value="{Binding IsChecked}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+
+                    <GridViewColumn Header="選択">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsChecked}"></CheckBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="注文" DisplayMemberBinding="{Binding PoName}">
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Height="50">
+            <Button Content="一覧リロード" Command="{Binding ReloadPoFileToListViewCommand}" Margin="10,10,10,10" Padding="5,1,5,1"></Button>
+            <Button Content="結果表示" Command="{Binding LoadSelectedPoToListViewCommand}" Margin="10,10,10,10" Padding="5,1,5,1"></Button>
+        </StackPanel>
+        <GridSplitter Width="2" Grid.Column="1" ResizeBehavior="PreviousAndNext"/>
+        <TabControl Grid.Column="2" Grid.RowSpan="2" TabStripPlacement="Bottom">
+            <TabItem Header="商品別">
+                <ListView ItemsSource="{Binding ItemInfoList}" SelectionMode="Multiple">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsSelected" Value="{Binding IsChecked}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsChecked}"></CheckBox>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn DisplayMemberBinding="{Binding Index}" Width="30"></GridViewColumn>
+                            <GridViewColumn Header="写真">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding ImagePath}" Height="80"></Image>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="品番" DisplayMemberBinding="{Binding Pid}"></GridViewColumn>
+                            <GridViewColumn Header="数量(袋)" DisplayMemberBinding="{Binding Quantity}"></GridViewColumn>
+                            <GridViewColumn Header="セット" DisplayMemberBinding="{Binding Set}"></GridViewColumn>
+                            <GridViewColumn Header="注文" DisplayMemberBinding="{Binding Pos}"></GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+            <TabItem Header="注文別">
+                <ListView ItemsSource="{Binding PoInfoList}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Expander Header="{Binding PoName}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Summary}"></TextBlock>
+                                    <ListView ItemsSource="{Binding Items}">
+                                        <ListView.View>
+                                            <GridView>
+                                                <GridViewColumn Header="写真">
+                                                    <GridViewColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Image Source="{Binding ImagePath}" Height="80"></Image>
+                                                        </DataTemplate>
+                                                    </GridViewColumn.CellTemplate>
+                                                </GridViewColumn>
+                                                <GridViewColumn Header="品番" DisplayMemberBinding="{Binding Pid}"></GridViewColumn>
+                                                <GridViewColumn Header="数量(袋)" DisplayMemberBinding="{Binding Quantity}"></GridViewColumn>
+                                                <GridViewColumn Header="セット" DisplayMemberBinding="{Binding Set}"></GridViewColumn>
+                                                <GridViewColumn Header="注文" DisplayMemberBinding="{Binding Po}"></GridViewColumn>
+                                            </GridView>
+                                        </ListView.View>
+                                    </ListView>
+                                </StackPanel>
+                            </Expander>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+        </TabControl>
+        <StatusBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+            <StatusBarItem  HorizontalContentAlignment="Right">
+                <TextBlock Text="{Binding ItemsSummary}"/>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
+</Window>

@@ -1,0 +1,128 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using ItemsSummary.ViewModel
+@using CommunityToolkit.Mvvm.Messaging
+@using ItemsSummary.ViewModel.Messages
+@inject MainWindowViewModel vm
+@inject IJSRuntime jsRuntime
+
+<PageTitle>Items Summary Blazor</PageTitle>
+<div class="test-output">
+    <p id="debugOutput">@debugOutput</p>
+</div>
+<div class="main-window">
+    <div class="d-grid">
+        <h2 class="card-header">注文一覧</h2>
+        <button class="btn-success" @onclick="vm.ReloadPoFileToListViewCommand.ExecuteAsync">一覧リロード</button>
+        <ol class="list-group-flush card-body">
+            @if (vm.PoFileList != null)
+            {
+                @foreach (var poFile in vm.PoFileList)
+                {
+                    <li class="list-group-item-action">
+                        <input type="checkbox" id="chk@(poFile.PoName)" class="checkbox" @bind="poFile.IsChecked" />
+                        <label for="chk@(poFile.PoName)">
+                            @poFile.PoName
+                        </label>
+                    </li>
+                }
+            }
+        </ol>
+        <button class="btn-outline-primary" @onclick="vm.LoadSelectedPoToListViewCommand.ExecuteAsync" disabled=@(vm.LoadSelectedPoToListViewCommand.CanExecute(null)==false)>結果表示</button>
+        <ul class="nav" id="resultNav" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="productsTab" href="#products">商品別</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="posTab" href="#pos">注文別</a>
+            </li>
+        </ul>
+        <div>
+            <h2 class="card-header">商品別</h2>
+            <div class="card-body" id="products">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">写真</th>
+                            <th scope="col">品番</th>
+                            <th scope="col">数量(袋)</th>
+                            <th scope="col">セット</th>
+                            <th scope="col">注文</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (vm.ItemInfoList != null)
+                        {
+                            @foreach (var itemInfo in vm.ItemInfoList)
+                            {
+                                <input type="checkbox" id="chk@(itemInfo.Pid)" class="checkbox" @bind="itemInfo.IsChecked" />
+                                <tr class="d-table-row">
+                                    <td class="d-lg-table-cell">@itemInfo.Index</td>
+                                    <td><img src=@itemInfo.ImagePath class="img-fluid" /> </td>
+                                    <td class="d-lg-table-cell">@itemInfo.Pid</td>
+                                    <td class="d-lg-table-cell">@itemInfo.Quantity</td>
+                                    <td class="d-lg-table-cell">@itemInfo.Set</td>
+                                    <td class="d-lg-table-cell">@itemInfo.Pos</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <h2 class="card-header">注文別</h2>
+            <div class="card-body" id="pos">
+                @if (vm.PoInfoList != null)
+                {
+                    @foreach (var poInfo in vm.PoInfoList)
+                    {
+                        <div class="card">
+                            <div class="card-header" id="heading@(poInfo.PoName)">
+                                @poInfo.PoName
+                            </div>
+                            <div class="card-body">
+                                <p>@poInfo.Summary</p>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">写真</th>
+                                            <th scope="col">品番</th>
+                                            <th scope="col">数量(袋)</th>
+                                            <th scope="col">セット</th>
+                                            <th scope="col">注文</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in poInfo.Items)
+                                        {
+                                            <tr>
+                                                <td><img src="@item.ImagePath" class="img-fluid" /></td>
+                                                <td>@item.Pid</td>
+                                                <td>@item.Quantity</td>
+                                                <td>@item.Set</td>
+                                                <td>@item.Po</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+@code {
+    private string debugOutput = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        WeakReferenceMessenger.Default.Register<ViewModel.Messages.MessageBoxMessage>(this, (r, m) =>
+            {//ViewModelからMessage表示の指示がきたときにAlertを表示する
+                jsRuntime.InvokeVoidAsync("alert", m.Value.msg);
+            });
+    }
+}

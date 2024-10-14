@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\DummyFiles\PoTxt\20241015_Z_20241012-123459789_5000済.txt" />
+    <Content Remove="wwwroot\DummyFiles\PoTxt\20241016_X_12341234_Name_1980済.txt" />
+    <Content Remove="wwwroot\DummyFiles\PoTxt\20241016_Y_56785678_980済.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ItemsSummary.ViewModel\ItemsSummary.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\DummyFiles\PoTxt\20241015_Z_20241012-123459789_5000済.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\DummyFiles\PoTxt\20241016_X_12341234_Name_1980済.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\DummyFiles\PoTxt\20241016_Y_56785678_980済.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

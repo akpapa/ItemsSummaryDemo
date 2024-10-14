@@ -1,0 +1,22 @@
+﻿img {
+    min-width: 80px;
+}
+
+input.checkbox {
+    width: 20px;
+    height: 20px;
+}
+
+input + label {
+    width: 90%;
+}
+
+input:checked + label {
+    background-color: dodgerblue;
+    color:white;
+}
+
+input:checked + tr {
+    background-color: dodgerblue;
+    color: white;
+}
